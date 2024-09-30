@@ -22,6 +22,28 @@ namespace CongestionTaxCalculatorTests
         }
 
         [Fact]
+        public void CalculateTaxForMultiplePasses_Car()
+        {
+            // Setup
+            CongestionTaxCalculator calculator = new CongestionTaxCalculator();
+            Vehicle car = new Car();
+            DateTime[] passes = {
+                // Passes within 60 minutes
+                new DateTime(2013, 2, 7, 6, 0, 0), // Fee 8 SEK
+                new DateTime(2013, 2, 7, 17, 55, 0), // Fee 13 SEK
+                new DateTime(2013, 2, 7, 18, 9, 0), // Fee 8 SEK
+                new DateTime(2013, 2, 7, 18, 31, 0), // Fee 0 SEK
+            };
+
+            // Execute
+            int tax = calculator.GetTax(car, passes);
+
+            // Verify
+            // Should be charged by mornin fee (8 SEK) and evening fee only (13 SEK)
+            Assert.Equal(13, tax);
+        }
+
+        [Fact]
         public void CalculateTaxForMultiplePassesInSameHour_Car()
         {
             // Setup
@@ -65,11 +87,11 @@ namespace CongestionTaxCalculatorTests
             CongestionTaxCalculator calculator = new CongestionTaxCalculator();
             Vehicle car = new Car();
             DateTime[] passes = {
-                new DateTime(2013, 2, 7, 6, 0, 0),
-                new DateTime(2013, 2, 7, 7, 30, 0),
-                new DateTime(2013, 2, 7, 8, 30, 0),
-                new DateTime(2013, 2, 7, 15, 30, 0),
-                new DateTime(2013, 2, 7, 17, 0, 0)
+                new DateTime(2013, 2, 7, 6, 0, 0), // Fee 8 SEK
+                new DateTime(2013, 2, 7, 7, 30, 0), // Fee 18 SEK
+                new DateTime(2013, 2, 7, 8, 30, 0), // Fee 8 SEK
+                new DateTime(2013, 2, 7, 15, 30, 0), // Fee 18 SEK
+                new DateTime(2013, 2, 7, 17, 0, 0) // Fee 13 SEK
             };
 
             // Execute
@@ -77,6 +99,8 @@ namespace CongestionTaxCalculatorTests
 
             // Assert
             // Ensure the maximum daily charge is capped at 60 SEK
+            // (8 + 18 + 8 + 18 + 13 = 65 > 60)
+            // And no additional fees are added
             Assert.Equal(60, tax);
         }
     }

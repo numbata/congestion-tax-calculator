@@ -13,33 +13,34 @@ public class CongestionTaxCalculator
     public int GetTax(Vehicle vehicle, DateTime[] dates)
     {
         DateTime intervalStart = dates[0];
-        int intervalFee = 0;
+        int intervalTax = 0;
 
-        int totalFee = 0;
+        int totalTax = 0;
 
         foreach (DateTime date in dates)
         {
-            int nextFee = GetTollFee(date, vehicle);
+            int timeTax = GetTollFee(date, vehicle);
 
             TimeSpan interval = date - intervalStart;
             long minutes = (long) interval.TotalMinutes;
 
             if (minutes <= 60)
             {
-                intervalFee = Math.Max(intervalFee, nextFee);
+                intervalTax = Math.Max(intervalTax, timeTax);
             }
             else
             {
-                totalFee += intervalFee;
+                totalTax += intervalTax;
                 intervalStart = date;
-                intervalFee = nextFee;
+                intervalTax = timeTax;
             }
         }
-        totalFee += intervalFee;
 
-        if (totalFee > 60) totalFee = 60;
+        totalTax += intervalTax;
 
-        return totalFee;
+        if (totalTax > 60) totalTax = 60;
+
+        return totalTax;
     }
 
     private bool IsTollFreeVehicle(Vehicle vehicle)
@@ -83,6 +84,7 @@ public class CongestionTaxCalculator
 
         if (year == 2013)
         {
+            // Public holidays
             if (month == 1 && day == 1 ||
                 month == 3 && (day == 28 || day == 29) ||
                 month == 4 && (day == 1 || day == 30) ||

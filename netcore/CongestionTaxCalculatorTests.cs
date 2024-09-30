@@ -40,7 +40,8 @@ namespace CongestionTaxCalculatorTests
 
             // Verify
             // Should be charged by mornin fee (8 SEK) and evening fee only (13 SEK)
-            Assert.Equal(13, tax);
+            // In total 21 SEK
+            Assert.Equal(21, tax);
         }
 
         [Fact]
@@ -89,7 +90,7 @@ namespace CongestionTaxCalculatorTests
             DateTime[] passes = {
                 new DateTime(2013, 2, 7, 6, 0, 0), // Fee 8 SEK
                 new DateTime(2013, 2, 7, 7, 30, 0), // Fee 18 SEK
-                new DateTime(2013, 2, 7, 8, 30, 0), // Fee 8 SEK
+                new DateTime(2013, 2, 7, 8, 45, 0), // Fee 8 SEK
                 new DateTime(2013, 2, 7, 15, 30, 0), // Fee 18 SEK
                 new DateTime(2013, 2, 7, 17, 0, 0) // Fee 13 SEK
             };
